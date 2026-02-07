@@ -14,7 +14,7 @@
     "uv"
   ],
   "author": "MeowSkyKung",
-  "license": "ISC",
+  "license": "CC-BY-SA-4.0",
   "description": "Node module that allows you to run Python code from JS.",
   "os": [
     "win32"
