@@ -60,11 +60,11 @@ async function installPython() {
         const pythonVer = pkg.python?.version ?? mainBranch
         console.log(`Installing Python ${pythonVer}`);
 
-        runUV(["python", "install", pythonVer]);
-        runUV(["python", "pin", pythonVer]);
-        runUV(["init", "--bare", workDir, "--python", pythonVer]);
-        runUV(["venv", "--python", pythonVer, "--system-site-packages", path.join(workDir, "__pypackages__"), "--clear"]);
-        runUV(["pip", "install", "pyzmq", "--python", pythonVer, "--system", "--break-system-packages"]);
+        await runUV(["python", "install", pythonVer]);
+        await runUV(["python", "pin", pythonVer]);
+        await runUV(["init", "--bare", workDir, "--python", pythonVer]);
+        await runUV(["venv", "--python", pythonVer, "--system-site-packages", path.join(workDir, "__pypackages__"), "--clear"]);
+        await runUV(["pip", "install", "pyzmq", "--python", pythonVer, "--system", "--break-system-packages"]);
     } catch (error) {
         console.error('Error installing Python:', error);
         process.exit(1);

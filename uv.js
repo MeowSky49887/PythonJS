@@ -17,32 +17,36 @@ const env = {
     UV_PROJECT_ENVIRONMENT: path.join(workDir, "__pypackages__"),
 };
 
-function runUV(uvArgs) {
-    const proc = spawn(uvExe, uvArgs, {
+function spawnAsync(command, args, options) {
+    return new Promise((resolve, reject) => {
+        const proc = spawn(command, args, options);
+
+        proc.on("error", reject);
+
+        proc.on("exit", code => {
+            if (code === 0) {
+                resolve();
+            } else {
+                reject(new Error(`${command} exited with code ${code}`));
+            }
+        });
+    });
+}
+
+async function runUV(uvArgs) {
+    await spawnAsync(uvExe, uvArgs, {
         stdio: "inherit",
         cwd: workDir,
         env,
     });
-
-    proc.on("exit", code => {
-        console.log(`[pyjs] uv exited with code ${code}`);
-    });
-
-    return proc;
 }
 
-function runUVX(uvxArgs) {
-    const proc = spawn(uvxExe, uvxArgs, {
+async function runUVX(uvxArgs) {
+    await spawnAsync(uvxExe, uvxArgs, {
         stdio: "inherit",
         cwd: baseDir,
         env,
     });
-
-    proc.on("exit", code => {
-        console.log(`[pyjs] uvx exited with code ${code}`);
-    });
-
-    return proc;
 }
 
 /* CommonJS exports */
