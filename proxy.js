@@ -68,7 +68,7 @@ class PythonJS {
 
         const [reply] = await this.sock.receive();
 
-        return JSON.parse(reply.toString());
+        return JSON.parse(reply.toString()).result;
     }
 
     async init(filePath) {
@@ -79,7 +79,6 @@ class PythonJS {
 
         let res;
         res = await this._callPython(`__load__('${safe}')`);
-        console.log(res);
 
         const proxy = new Proxy({}, {
             get: (_, funcName) => {
