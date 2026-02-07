@@ -1,7 +1,7 @@
 const { spawn } = require("child_process");
 const path = require("path");
 
-const workDir = process.cwd();
+const workDir = process.env.INIT_CWD;
 const baseDir = __dirname;
 
 const uvExe = path.join(baseDir, "bin", "uv.exe");
