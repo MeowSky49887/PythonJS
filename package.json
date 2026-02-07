@@ -1,0 +1,27 @@
+{
+  "name": "python-js",
+  "version": "2026.2.1",
+  "main": "proxy.js",
+  "scripts": {
+    "preinstall": "node install.js"
+  },
+  "bin": {
+    "pyjs": "cli/pyjs.js"
+  },
+  "keywords": [
+    "nodejs",
+    "python",
+    "uv"
+  ],
+  "author": "MeowSkyKung",
+  "license": "ISC",
+  "description": "Node module that allows you to run Python code from JS.",
+  "os": [
+    "win32"
+  ],
+  "dependencies": {
+    "node-fetch-commonjs": "^3.3.2",
+    "unzipper": "^0.12.3",
+    "zeromq": "^6.5.0"
+  }
+}
