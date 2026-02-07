@@ -63,7 +63,7 @@ async function installPython() {
         runUV(["python", "install", pythonVer]);
         runUV(["python", "pin", pythonVer]);
         runUV(["init", "--bare", workDir, "--python", pythonVer]);
-        runUV(["venv", "--python", pythonVer, "--system-site-packages", path.join(workDir, "__pypackages__")]);
+        runUV(["venv", "--python", pythonVer, "--system-site-packages", path.join(workDir, "__pypackages__"), "--clear"]);
         runUV(["pip", "install", "pyzmq", "--python", pythonVer, "--system", "--break-system-packages"]);
     } catch (error) {
         console.error('Error installing Python:', error);
