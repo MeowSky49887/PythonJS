@@ -48,25 +48,38 @@ async function extractUV(zipFilePath) {
 
 async function installPython() {
     try {
-        const pkg = require(path.join(workDir, "package.json"))
+        const pythonVersionFile = path.join(workDir, ".python-version");
+        const pyprojectFile = path.join(workDir, "pyproject.toml");
+        const pypackagesDir = path.join(workDir, "__pypackages__");
 
-        const res = await fetch("https://peps.python.org/api/python-releases.json");
-        const data = await res.json();
-        const metadata = data.metadata;
-        const mainBranch = Object.keys(metadata).find(v => {
-            return metadata[v].branch === "main";
-        });
+        let pythonVer;
 
-        const pythonVer = pkg.python?.version ?? mainBranch
+        if (fs.existsSync(pythonVersionFile)) {
+            pythonVer = fs.readFileSync(pythonVersionFile, "utf8").trim();
+        } else {
+            const res = await fetch("https://peps.python.org/api/python-releases.json");
+            const data = await res.json();
+            const metadata = data.metadata;
+
+            const mainBranch = Object.keys(metadata).find(v => metadata[v].branch === "main");
+            pythonVer = mainBranch;
+        }
+
         console.log(`Installing Python ${pythonVer}`);
 
         await runUV(["python", "install", pythonVer]);
-        await runUV(["python", "pin", pythonVer]);
-        await runUV(["init", "--bare", workDir, "--python", pythonVer]);
-        await runUV(["venv", "--python", pythonVer, "--system-site-packages", path.join(workDir, "__pypackages__"), "--clear"]);
+        if (!fs.existsSync(pythonVersionFile)) {
+            await runUV(["python", "pin", pythonVer]);
+        }
+        if (!fs.existsSync(pyprojectFile)) {
+            await runUV(["init", "--bare", workDir, "--python", pythonVer]);
+        }
+        if (!fs.existsSync(pypackagesDir)) {
+            await runUV(["venv", "--python", pythonVer, "--system-site-packages", pypackagesDir, "--clear" ]);
+        }
         await runUV(["pip", "install", "pyzmq", "--python", pythonVer, "--system", "--break-system-packages"]);
     } catch (error) {
-        console.error('Error installing Python:', error);
+        console.error("Error installing Python:", error);
         process.exit(1);
     }
 }
@@ -74,4 +87,5 @@ async function installPython() {
 (async () => {
     await downloadLatestUV();
     await installPython();
+
 })();
