@@ -63,8 +63,21 @@ async function installPython() {
             const data = await res.json();
             const metadata = data.metadata;
 
-            const mainBranch = Object.keys(metadata).find(v => metadata[v].branch === "main");
-            pythonVer = mainBranch;
+            const latestReleased = Object.keys(metadata)
+                .filter(v => metadata[v].status === "bugfix" || metadata[v].status === "security")
+                .sort((a, b) => {
+                    const pa = a.split('.').map(Number);
+                    const pb = b.split('.').map(Number);
+
+                    for (let i = 0; i < 3; i++) {
+                        const diff = (pb[i] || 0) - (pa[i] || 0);
+                        if (diff) return diff;
+                    }
+                    return 0;
+                })[0];
+
+            pythonVer = latestReleased;
+
         }
 
         console.log(`Installing Python ${pythonVer}`);

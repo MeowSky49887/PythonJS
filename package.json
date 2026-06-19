@@ -3,7 +3,7 @@
   "version": "2026.2.1",
   "main": "proxy.js",
   "scripts": {
-    "preinstall": "node install.js"
+    "postinstall": "node install.js"
   },
   "bin": {
     "pyjs": "cli/pyjs.js"
