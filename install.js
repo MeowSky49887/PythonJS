@@ -48,6 +48,8 @@ async function extractUV(zipFilePath) {
 
 async function installPython() {
     try {
+        console.log(`Current Working Directory: ${workDir}`);
+
         const pythonVersionFile = path.join(workDir, ".python-version");
         const pyprojectFile = path.join(workDir, "pyproject.toml");
         const pypackagesDir = path.join(workDir, "__pypackages__");

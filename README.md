@@ -16,17 +16,7 @@ Install `python-js` by running:
 $ npm install --save https://github.com/MeowSky49887/PythonJS.git
 ```
 
-Specified Python Version in package.json:
-```json
-{
-  "python": {
-    "version": "3.11"
-  },
-  "dependencies": {
-    "python-js": "github:MeowSky49887/PythonJS"
-  }
-}
-```
+Specified Python Version in .python-version:
 
 Documentation
 -------------
