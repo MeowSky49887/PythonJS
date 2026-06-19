@@ -80,15 +80,52 @@ class PythonJS {
         let res;
         res = await this._callPython(`__load__('${safe}')`);
 
+        const pyRepr = (value) => {
+            if (value === null) return "None";
+            if (value === true) return "True";
+            if (value === false) return "False";
+
+            if (typeof value === "string") {
+                return JSON.stringify(value);
+            }
+
+            if (Array.isArray(value)) {
+                return `[${value.map(pyRepr).join(", ")}]`;
+            }
+
+            if (typeof value === "object") {
+                return `{${Object.entries(value)
+                    .map(([k, v]) => `${JSON.stringify(k)}: ${pyRepr(v)}`)
+                    .join(", ")}}`;
+            }
+
+            return String(value);
+        };
+
         const proxy = new Proxy({}, {
             get: (_, funcName) => {
                 if (funcName === "then") {
-                    return undefined; 
+                    return undefined;
                 }
+
                 return async (...args) => {
-                    const argList = JSON.stringify(args).slice(1, -1);
+                    let argList;
+
+                    if (
+                        args.length === 1 &&
+                        args[0] &&
+                        typeof args[0] === "object" &&
+                        !Array.isArray(args[0])
+                    ) {
+                        argList = Object.entries(args[0])
+                            .map(([k, v]) => `${k}=${pyRepr(v)}`)
+                            .join(", ");
+                    } else {
+                        argList = args.map(pyRepr).join(", ");
+                    }
+
                     return await this._callPython(
-                        `${funcName}(${argList})`,
+                        `${String(funcName)}(${argList})`,
                         safe
                     );
                 };
