@@ -68,7 +68,7 @@ class PythonJS {
 
         const [reply] = await this.sock.receive();
 
-        return JSON.parse(reply.toString()).result;
+        return JSON.parse(reply.toString());
     }
 
     async init(filePath) {
